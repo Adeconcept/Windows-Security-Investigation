@@ -143,8 +143,11 @@ I confirmed that:
 ## Commands used
 
 _Get-Process:_	Display running processes
+
 _Get-Service:_	List Windows services
+
 _Get-EventLog -LogName Security:_  View Security Event Logs
+
 _Get-EventLog -LogName Security -Newest 20:_  Display the latest Security events
 
 
