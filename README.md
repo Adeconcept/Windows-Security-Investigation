@@ -45,7 +45,7 @@ The Security log contains records of authentication attempts, privilege usage, a
 
 During this investigation, I focused on authentication activity.
 
-![Security Log](screenshots/windows-security-logs.png)
+![Security Log](Screenshots/windows-security-logs.png)
 
 
 
@@ -65,7 +65,7 @@ This helped me understand:
 
 I observed several successful interactive logons generated during my own use of the virtual machine.
 
-![Successful Logins](screenshots/windows-successful-logons-filter.png)
+![Successful Logins](Screenshots/windows-successful-logons-filter.png)
 
 
 
@@ -79,7 +79,7 @@ During this lab, I did observe one authentication failure on my computer, howeve
 
 This demonstrated how Windows records unsuccessful authentication attempts and provides useful details for investigations.
 
-![Failed Login](screenshots/windows-failed-login.png)
+![Failed Login](Screenshots/windows-failed-login.png)
 
 
 
@@ -96,7 +96,7 @@ This command displays running applications and system processes, making it usefu
 
 During the investigation, the running processes matched expected Windows services and applications.
 
-![Get processes](screenshots/get-processes.png)
+![Get processes](Screenshots/get-processes.png)
 
 
 
@@ -112,7 +112,7 @@ This provided visibility into services currently running or stopped. I also proc
 
 Understanding normal services is important because attackers may install malicious services to maintain persistence.
 
-![Get service](screenshots/get-services-running.png)
+![Get service](Screenshots/get-services-running.png)
 
 
 
@@ -128,10 +128,10 @@ I confirmed that:
 - No active threats were detected.
 - The system protection status was healthy.
 
-![Windows Defender Virus](screenshots/windows-defender-virus.png)
+![Windows Defender Virus](Screenshots/windows-defender-virus.png)
 
 
-![Windows Defender Firewall](screenshots/windows-defender-firewall-protection.png)
+![Windows Defender Firewall](Screenshots/windows-defender-firewall-protection.png)
 
 
 
