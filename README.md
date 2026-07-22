@@ -1,201 +1,171 @@
-# Linux-Security-Investigation-Report
+# Windows Security Investigation
 
-## OVERVIEW
 
-As part of my cybersecurity learning journey, I completed my first Linux security investigation using an Ubuntu Server virtual machine running on UTM.
+## OBJECTIVE
 
-The objective of this lab was to become familiar with the Linux command line and learn how security analysts investigate systems by examining logs, identifying user activity, and understanding how authentication events are recorded.
+The goal of this investigation was to become familiar with Windows event logs, PowerShell, and built-in administrative tools used by security analysts to monitor system activity. 
 
-Rather than simply learning Linux commands, this project focused on using those commands to answer investigative questions, an essential skill for SOC Analysts and Incident Responders.
+During this exercise, I explored authentication events, running processes, system services, and Windows Defender to understand how Windows records security-related events.
 
 ---
+
 
 ## Related Article
 
 I documented the learning journey and lessons learned in more detail on Medium:
-[Linux Investigation](https://medium.com/@koskiddoo/my-first-linux-security-investigation-learning-to-think-like-a-soc-analyst-b8d45c723551)
+[Windows Investigation](https://medium.com/@koskiddoo/windows-investigation-report-fa51cd8f5b2f?sharedUserId=koskiddoo)
+
 
 ---
 
-## Objective
-
-The goal of this investigation was to:
-
-- Navigate the Linux file system
-- Practice essential Linux commands
-- Read and analyze system logs
-- Investigate authentication events
-- Understand where Linux stores security-related information
-- Develop an investigative mindset when working on Linux systems
-
----
 
 ## Lab Environment
 
 ### Host Machine: Apple MacBook M1
+
 #### Virtualization: UTM
-### Operating System: Ubuntu Server (ARM64)
-### Investigation Type: Linux Log Analysis
-### Role Simulated: SOC Analyst
+
+### Operating System: Windows 11 ARM
+
+### Investigation Toos: Event Viewer, PowerShell, Task Manager, Services, Windows Defender
+
 
 ---
 
-## Investigation Scenario
 
-A system administrator has requested a review of the Linux server to better understand recent authentication activity.
+## INVESTIGATION WORKFLOW
 
-As the security analyst, my task was to inspect the system, locate relevant logs, and identify authentication events that could indicate normal or suspicious user activity.
+### 1. Examined Windows Security logs
 
----
+I opened Event Viewer and navigated to:
 
-## Investigation Steps
+Windows Logs → Security
 
-### 1. Navigating the File System
+The Security log contains records of authentication attempts, privilege usage, account management, and other security-related events.
 
-I began by exploring the Linux directory structure to understand where important system files and logs are stored.
+During this investigation, I focused on authentication activity.
 
-_Commands used_
+![Security Log](screenshots/windows-security-logs.png)
 
-pwd
-ls
-ls -la
-cd
-tree
 
-_What I learned_
 
-- Linux organizes files using a hierarchical directory structure.
-- Many important security logs are stored under /var/log.
-- Hidden files begin with a . and can be displayed using ls -la.
 
-![Current Directory](screenshots/current-directory.png)
 
 
+### 2. Reviewed successful logins
 
+I filtered the Security log for Event ID 4624, which represents a successful logon.
 
+This helped me understand:
 
+- Which account logged in.
+- The type of logon.
+- The time of the event.
+- The authentication package used.
 
-### 2. Investigating Authentication Logs
+I observed several successful interactive logons generated during my own use of the virtual machine.
 
-Next, I examined authentication logs to understand how login events are recorded.
+![Successful Logins](screenshots/windows-successful-logons-filter.png)
 
-_Commands used_
 
-sudo journalctl
-journalctl -u ssh
-journalctl SYSLOG_FACILITY=4
 
-_What I learned_
 
-I identified:
 
-- SSH login attempts
-- Successful authentication events
-- Failed login attempts (if present)
-- System service activity related to SSH
+### 3. Reviewed failed login attempts
 
-This demonstrated how Linux records authentication events that analysts can use during incident investigations.
+Next, I searched for Event ID 4625, which records failed logon attempts.
 
-![Sudo](screenshots/sudo-journalctl.png)
+During this lab, I did observe one authentication failure on my computer, however it's not a suspicous activity.
 
+This demonstrated how Windows records unsuccessful authentication attempts and provides useful details for investigations.
 
-![SSH attempts](screenshots/ssh-attempts.png)
+![Failed Login](screenshots/windows-failed-login.png)
 
 
-![Login sesions](screenshots/login-events-session.png)
 
 
 
 
+### 4. Examined running processes
 
+Using PowerShell, I listed all active processes.
 
+_Get-Process_
 
-### 3. Filtering Log data
+This command displays running applications and system processes, making it useful for identifying unexpected or malicious activity. Also, I further investigated to be able to read the numbers easily and use the _Get-Member_ command to do this.
 
-Security analysts rarely read entire log files.
+During the investigation, the running processes matched expected Windows services and applications.
 
-Instead, they filter data to quickly locate relevant events.
+![Get processes](screenshots/get-processes.png)
 
-_Commands Used_
 
-journalctl | grep ssh
-journalctl SYSLOG_FACILITY=4 | grep -i "failed"
-journalctl -b
 
-_What I Learned_
 
-Using _journalctl + grep_ made it much easier to isolate security-related events without reading thousands of log entries manually.
 
-This reinforced the importance of efficient log filtering during investigations.
+### 5. Examined system services
 
-![Everything SSH](screenshots/searching-everything-ssh.png)
+I reviewed installed Windows services using:
 
+_Get-Service_
 
-![Login failed attempts](screenshots/login-failed-attempts.png)
+This provided visibility into services currently running or stopped. I also proceed to getting only running services on my computer.
 
+Understanding normal services is important because attackers may install malicious services to maintain persistence.
 
-![System boot](screenshots/systemboot-session.png)
+![Get service](screenshots/get-services-running.png)
 
 
 
 
 
+### 6. Reviewed Windows defender
 
-### 4. Monitoring recent activity
+Finally, I opened Windows Security to review the status of Microsoft Defender.
 
-I then viewed the most recent log entries to understand how analysts monitor live systems.
+I confirmed that:
 
-_Commands used_
+- Real-time protection was enabled.
+- No active threats were detected.
+- The system protection status was healthy.
 
-sudo tail /var/log/auth.log
-sudo tail -20 /var/log/auth.log
-sudo tail -f /var/log/auth.log
+![Windows Defender Virus](screenshots/windows-defender-virus.png)
 
-_What I learned_
 
-The tail command is useful for reviewing the latest system events and is commonly used during active investigations.
+![Windows Defender Firewall](screenshots/windows-defender-firewall-protection.png)
 
-![Last 10 activitities](screenshots/last-10-log.png)
-
-
-![Last 20 activitities](screenshots/last-20-log.png)
-
-
-![Current activitities](screenshots/live-auth-act.png)
 
 
 
 
 ---
 
-## Commands Practiced
 
-_pwd:_	Display current directory
-_ls:_	List files
-_ls -la:_	Show detailed file information, including hidden files
-_cd:_	Change directories
-_grep:_	Search log files
-_tail:_	Display recent log entries
-_journalctl:_	View systemd logs
-_cat:_	Display file contents
-_less:_	Read large files efficiently
+## Commands used
+
+_Get-Process:_	Display running processes
+_Get-Service:_	List Windows services
+_Get-EventLog -LogName Security:_  View Security Event Logs
+_Get-EventLog -LogName Security -Newest 20:_  Display the latest Security events
 
 
 ---
+
 
 ## Investigation findings
 
 During this investigation I found:
 
-- Linux stores authentication events in system logs.
-- SSH activity can be reviewed using journalctl and auth.log.
-- Filtering commands such as grep significantly reduce investigation time.
-- Recent system events can quickly be reviewed using tail.
-- Understanding log locations is essential for incident response.
+- Multiple successful authentication events (Event ID 4624) corresponding to interactive user logons.
+- No unexpected user account creation events (Event ID 4720) during the observation period.
+- Running processes appeared consistent with a standard Windows 11 installation.
+- Windows services were operating as expected with no suspicious entries identified.
+- Microsoft Defender reported that the system was protected and no threats were detected.
 
-No malicious activity was intentionally introduced during this lab. The focus was on learning how to locate and interpret authentication events.
+Based on the evidence collected, I found no indicators of suspicious activity during this investigation.
+
 
 ---
+
 
 ## Challenges
 
@@ -205,44 +175,29 @@ Initially, the number of available logs was overwhelming, but after exploring th
 
 I also learned that different Linux distributions may store logs differently, making it important to understand the system you're investigating.
 
+
 ---
+
 
 ## Lessons I learned
 
-This investigation helped me shift my mindset from simply learning Linux commands to thinking like a security analyst.
+This investigation introduced me to several of the tools Windows security analysts use every day.
 
-Rather than asking, "What does this command do?", I started asking:
+Before completing this lab, I knew that Windows generated security logs, but I had never explored them in detail. Reviewing authentication events helped me understand how user activity is recorded and how Event IDs can provide valuable context during an investigation.
 
-- What evidence can I find?
-- What does this log tell me?
-- Is this activity expected?
-- If this were a real incident, what would I investigate next?
+Using PowerShell also reinforced how quickly system information can be gathered compared to navigating through graphical interfaces.
 
-That change in perspective made the lab much more practical and aligned with the day-to-day responsibilities of a SOC Analyst.
+Most importantly, I learned that effective investigations begin by understanding what normal system activity looks like. Establishing this baseline will make it easier to recognize suspicious behavior in future labs involving malware analysis, threat detection, and security monitoring.
+
 
 ---
 
-## Skills demonstrated
-
-- Linux fundamentals
-- Log analysis
-- Authentication investigation
-- SSH analysis
-- Command line navigation
-- Security monitoring
-- Incident investigation
-- Analytical thinking
-
----
 
 ## Next Steps
 
-To continue building my investigation skills, I plan to explore:
+To build on this foundation, I plan to:
 
-- Linux user and group management
-- File permissions and ownership
-- Process monitoring
-- Network connections
-- Scheduled tasks (Cron jobs)
-- Basic threat hunting on Linux systems
-- Home SOC Lab
+- Investigate additional Windows Event IDs related to account management and privilege changes.
+- Explore Sysmon to collect more detailed endpoint telemetry.
+- Forward Windows Event Logs to a SIEM for centralized monitoring.
+- Practice investigating simulated security incidents in a home SOC environment.
