@@ -1,7 +1,7 @@
 # Windows Security Investigation
 
 
-## OBJECTIVE
+## Objective
 
 The goal of this investigation was to become familiar with Windows event logs, PowerShell, and built-in administrative tools used by security analysts to monitor system activity. 
 
@@ -33,7 +33,7 @@ I documented the learning journey and lessons learned in more detail on Medium:
 ---
 
 
-## INVESTIGATION WORKFLOW
+## Investigation Workflow
 
 ### 1. Examined Windows Security logs
 
@@ -140,7 +140,7 @@ I confirmed that:
 ---
 
 
-## Commands used
+## Commands Used
 
 _Get-Process:_	Display running processes
 
@@ -154,7 +154,7 @@ _Get-EventLog -LogName Security -Newest 20:_  Display the latest Security events
 ---
 
 
-## Investigation findings
+## Investigation Findings
 
 During this investigation I found:
 
@@ -182,7 +182,7 @@ I also learned that different Linux distributions may store logs differently, ma
 ---
 
 
-## Lessons I learned
+## Lessons I Learned
 
 This investigation introduced me to several of the tools Windows security analysts use every day.
 
